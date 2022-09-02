@@ -1,4 +1,5 @@
 ﻿using System;
+using Kontur.ImageTransformer.Model;
 
 namespace Kontur.ImageTransformer
 {
@@ -6,7 +7,7 @@ namespace Kontur.ImageTransformer
     {
         public static void Main(string[] args)
         {
-            using (var server = new AsyncHttpServer())
+            using (var server = new AsyncHttpServer<DrawingImageProcessor, DefaultImageComparator>())
             {
                 server.Start("http://+:8080/");
 
