@@ -7,7 +7,7 @@ namespace Kontur.ImageTransformer
     {
         public static void Main(string[] args)
         {
-            using (var server = new AsyncHttpServer<DrawingImageProcessor, DefaultImageComparator>())
+            using (var server = new AsyncHttpServer<NativeImageProcessor, DefaultImageComparator>())
             {
                 server.Start("http://+:8080/");
 

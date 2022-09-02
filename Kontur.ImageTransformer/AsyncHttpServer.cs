@@ -13,6 +13,7 @@ namespace Kontur.ImageTransformer
 {
     internal sealed class AsyncHttpServer<TImageProcessor, TImageComparator> : IDisposable
         where TImageProcessor: IImageProcessor, new()
+        //TODO: maybe move IImageComparator to IImageProcessor field 
         where TImageComparator : IImageComparator, new()
     {
         private readonly IImageComparator _comparator;
@@ -22,6 +23,12 @@ namespace Kontur.ImageTransformer
         /// </summary>
         private readonly Regex _coordsRegex = new Regex(@"[\-0-9]{1,10},[\-0-9]{1,10},[\-0-9]{1,10},[\-0-9]{1,10}",
             RegexOptions.Multiline);
+        
+        private const int REQUEST_TIMEOUT_MS = 1000;
+        private readonly HttpListener _listener;
+        private Thread _listenerThread;
+        private bool _disposed;
+        private volatile bool _isRunning;
         
         public AsyncHttpServer()
         {
@@ -101,12 +108,6 @@ namespace Kontur.ImageTransformer
                         var ctx = _listener.GetContext();
                         Task.Run(async () =>
                         {
-                            async Task aboba()
-                            {
-                                await Task.Delay(4000);
-                            }
-
-                            await aboba();
                             var context = ctx;
                             try
                             {
@@ -123,12 +124,14 @@ namespace Kontur.ImageTransformer
                                 context.Response.Close();
                             }
                         });
-                        var timeoutTimer = new Timer((clb) =>
+                        
+                        //timeout timer
+                        var timer = new Timer(_ =>
                         {
                             ctx.Response.StatusCode = (int) HttpStatusCode.GatewayTimeout;
                             ctx.Request.InputStream.Close();
                             ctx.Response.OutputStream.Close();
-                        }, new object(), 1000, -1);
+                        }, new object(), REQUEST_TIMEOUT_MS, -1);
                     }
                     else Thread.Sleep(0);
                 }
@@ -203,7 +206,7 @@ namespace Kontur.ImageTransformer
                 try
                 {
                     proc = new TImageProcessor();
-                    using (MemoryStream ms = new MemoryStream())
+                    using (var ms = new MemoryStream())
                     {
                         await datastream.CopyToAsync(ms);
                         ms.Position = 0;
@@ -277,11 +280,5 @@ namespace Kontur.ImageTransformer
         {
             return (int) HttpStatusCode.OK;
         }
-
-        private readonly HttpListener _listener;
-
-        private Thread _listenerThread;
-        private bool _disposed;
-        private volatile bool _isRunning;
     }
 }

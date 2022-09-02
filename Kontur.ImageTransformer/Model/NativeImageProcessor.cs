@@ -1,26 +1,18 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
-using System.Net.Mime;
+
 using Kontur.ImageTransformer.Model.Interfaces;
 
 namespace Kontur.ImageTransformer.Model
 {
-    public sealed class DrawingImageProcessor : IImageProcessor
+    public sealed class NativeImageProcessor : IImageProcessor
     {
-        public byte[] ImageBytes { get; }
-
-        private Graphics _graphics;
         private IImageComparator _comparator;
         private bool _initialized;
         private ImageInfo _imageInfo;
         private Image _image;
         private long _fileSize;
-
-        public DrawingImageProcessor()
-        {
-            
-        }
 
         public void Init(IImageComparator comparator, Stream data)
         {

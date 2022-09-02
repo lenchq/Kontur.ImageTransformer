@@ -20,19 +20,6 @@ namespace Kontur.ImageTransformer.Model
             _initialized = false;
         }
 
-        public byte[] ImageBytes
-        {
-            get
-            {
-                if (!_initialized)
-                {
-                    throw new Exception("Image not initialized!");
-                }
-
-                return _image.ToByteArray(MagickFormat.Png32);
-            }
-        }
-
         public void Init(IImageComparator comparator,Stream data)
         {
             _fileSize = data.Length;

@@ -6,7 +6,7 @@ namespace Kontur.ImageTransformer.Model
 {
     public sealed class DefaultImageComparator : IImageComparator
     {
-        private List<Func<IImage, bool>> _predicates;
+        private readonly List<Func<IImage, bool>> _predicates;
 
         public DefaultImageComparator()
         {

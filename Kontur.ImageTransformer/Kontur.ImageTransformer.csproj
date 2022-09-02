@@ -56,8 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntryPoint.cs" />
-    <Compile Include="ImageProcessor.cs" />
-    <Compile Include="Model\DrawingImageProcessor.cs" />
+    <Compile Include="Model\NativeImageProcessor.cs" />
     <Compile Include="Model\ImageInfo.cs" />
     <Compile Include="Model\DefaultImageComparator.cs" />
     <Compile Include="Model\Interfaces\IImage.cs" />

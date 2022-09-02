@@ -11,8 +11,6 @@ namespace Kontur.ImageTransformer.Model
         public int W { get; set; }
         public int H { get; set; }
 
-        public int[] Array => new[] {X, Y, W, H};
-
         public static TransformCoords FromArray(int[] values)
         {
             var coords = new TransformCoords

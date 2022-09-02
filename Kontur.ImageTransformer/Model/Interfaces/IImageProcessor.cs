@@ -1,12 +1,10 @@
 ﻿using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Kontur.ImageTransformer.Model.Interfaces
 {
     public interface IImageProcessor : IDisposable
     {
-        byte[] ImageBytes { get; }
         void Init(IImageComparator comparator, Stream data);
         bool CheckImage();
         void ProcessImage(TransformType type, ITransformCoords coords);
