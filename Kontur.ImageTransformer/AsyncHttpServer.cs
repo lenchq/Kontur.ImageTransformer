@@ -99,12 +99,7 @@ namespace Kontur.ImageTransformer
                     if (_listener.IsListening)
                     {
                         var ctx = _listener.GetContext();
-                        object state = new object();
-                        
-                        
-                        
-
-                        var task = Task.Run(async () =>
+                        Task.Run(async () =>
                         {
                             async Task aboba()
                             {
@@ -128,7 +123,7 @@ namespace Kontur.ImageTransformer
                                 context.Response.Close();
                             }
                         });
-                        Timer t = new Timer((clb) =>
+                        var timeoutTimer = new Timer((clb) =>
                         {
                             ctx.Response.StatusCode = (int) HttpStatusCode.GatewayTimeout;
                             ctx.Request.InputStream.Close();
@@ -141,10 +136,10 @@ namespace Kontur.ImageTransformer
                 {
                     throw;
                 }
-                catch (Exception error)
+                catch (Exception)
                 {
 #if DEBUG
-                    throw error;
+                    throw;
 #endif
                     return;
                 }
@@ -216,7 +211,7 @@ namespace Kontur.ImageTransformer
                         proc.Init(_comparator, ms);
                     }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
                     datastream.Close();
                     return InternalServerError();
