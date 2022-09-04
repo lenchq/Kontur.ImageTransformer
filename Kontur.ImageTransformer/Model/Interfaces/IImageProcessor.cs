@@ -6,6 +6,7 @@ namespace Kontur.ImageTransformer.Model.Interfaces
     public interface IImageProcessor : IDisposable
     {
         void Init(IImageComparator comparator, Stream data);
+        void InitWithFilesize(IImageComparator comparator, Stream data, long filesize);
         bool CheckImage();
         void ProcessImage(TransformType type, ITransformCoords coords);
         void WriteImage(Stream outputStream);

@@ -210,8 +210,9 @@ namespace Kontur.ImageTransformer
                     {
                         await datastream.CopyToAsync(ms);
                         ms.Position = 0;
-                        
-                        proc.Init(_comparator, ms);
+                        var filesize = request.ContentLength64;
+
+                        proc.InitWithFilesize(_comparator, ms, filesize);
                     }
                 }
                 catch (Exception)

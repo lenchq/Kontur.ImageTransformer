@@ -19,9 +19,31 @@ namespace Kontur.ImageTransformer.Model
         {
             _initialized = false;
         }
-
-        public void Init(IImageComparator comparator,Stream data)
+        
+        public void InitWithFilesize(IImageComparator comparator, Stream data, long filesize)
         {
+            if (_initialized)
+                return;
+            _fileSize = filesize;
+            _comparator = comparator;
+            _image = new MagickImage(data);
+            _initialized = true;
+
+            _imageInfo = new ImageInfo
+            {
+                Height = _image.Height,
+                Width = _image.Width,
+                //image format is always png
+                Format = ImageFormat.Png,
+                //Bytes to KiB
+                Size = _fileSize >> 10
+            };
+        }
+
+        public void Init(IImageComparator comparator, Stream data)
+        {
+            if (_initialized)
+                return;
             _fileSize = data.Length;
             _comparator = comparator;
             _image = new MagickImage(data);
@@ -41,20 +63,22 @@ namespace Kontur.ImageTransformer.Model
         public bool CheckImage()
         {
             if (!_initialized)
-            {
-                throw new Exception("Image not initialized!");
-            }
+                throw new Exception("Image not initialized! use Init()");
             
             return _comparator.Compare(_imageInfo);
         }
 
         public void WriteImage(Stream outputStream)
         {
+            if (!_initialized)
+                throw new Exception("Image not initialized! use Init()");
             _image.Write(outputStream, MagickFormat.Png32);
         }
 
         public void ProcessImage(TransformType type, ITransformCoords coords)
         {
+            if (!_initialized)
+                throw new Exception("Image not initialized! use Init()");
             ProcessRotate(type);
             ProcessCrop(coords);
         }
@@ -105,6 +129,8 @@ namespace Kontur.ImageTransformer.Model
         }
         public void Dispose()
         {
+            if (!_initialized)
+                return;
             _image.Dispose();
         }
     }

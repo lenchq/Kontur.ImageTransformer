@@ -14,8 +14,38 @@ namespace Kontur.ImageTransformer.Model
         private Image _image;
         private long _fileSize;
 
+        public NativeImageProcessor()
+        {
+            _initialized = false;
+        }
+
+        public void InitWithFilesize(IImageComparator comparator, Stream data, long filesize)
+        {
+            if(_initialized)
+                return;
+            _comparator = comparator;
+            _fileSize = filesize;
+            _image = Image.FromStream(data);
+            data.Close();
+            
+            _imageInfo = new ImageInfo
+            {
+                Height = _image.Height,
+                
+                Width = _image.Width,
+                
+                //image format is always png
+                Format = ImageFormat.Png,
+                
+                //Bytes to KiB
+                Size = _fileSize >> 10
+            };
+            _initialized = true;
+        }
         public void Init(IImageComparator comparator, Stream data)
         {
+            if(_initialized)
+                return;
             _comparator = comparator;
             _fileSize = data.Length;
             _image = Image.FromStream(data);
@@ -33,23 +63,21 @@ namespace Kontur.ImageTransformer.Model
                 //Bytes to KiB
                 Size = _fileSize >> 10
             };
-            //_graphics = Graphics.FromImage(_image);
-            
             _initialized = true;
         }
 
         public bool CheckImage()
         {
             if (!_initialized)
-            {
-                throw new Exception("Image not initialized!");
-            }
-            
-            return _comparator.Compare(_imageInfo);
+                throw new Exception("Image not initialized! use Init()");
+
+                return _comparator.Compare(_imageInfo);
         }
 
         public void ProcessImage(TransformType type, ITransformCoords coords)
         {
+            if (!_initialized)
+                throw new Exception("Image not initialized! use Init()");
             ProcessRotate(type);
             ProcessTransform(coords);
         }
@@ -128,11 +156,15 @@ namespace Kontur.ImageTransformer.Model
 
         public void WriteImage(Stream outputStream)
         {
+            if (!_initialized)
+                throw new Exception("Image not initialized! use Init()");
             _image.Save(outputStream, System.Drawing.Imaging.ImageFormat.Png);
         }
 
         public void Dispose()
         {
+            if (!_initialized)
+                return;
             _image.Dispose();
         }
     }
