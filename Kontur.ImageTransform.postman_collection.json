@@ -1,0 +1,142 @@
+{
+	"info": {
+		"_postman_id": "5eee08ee-7617-4ab4-bcc7-2e3929f56e9f",
+		"name": "Kontur.ImageTransform",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "17763869"
+	},
+	"item": [
+		{
+			"name": "ProcessImage",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var transformType = _.random(0,3);\r",
+							"switch (transformType) {\r",
+							"    case 0:\r",
+							"        transformType = \"rotate-cw\";\r",
+							"        break;\r",
+							"    case 1:\r",
+							"        transformType = \"rotate-ccw\";\r",
+							"        break;\r",
+							"    case 2:\r",
+							"        transformType = \"flip-v\";\r",
+							"        break;\r",
+							"    case 3:\r",
+							"        transformType = \"flip-h\";\r",
+							"        break;\r",
+							"}\r",
+							"pm.collectionVariables.set(\"transformType\", transformType);\r",
+							"\r",
+							"const imageH = 400;\r",
+							"const imageW = 500;\r",
+							"\r",
+							"pm.collectionVariables.set(\"crop-x\", _.random(0, imageW));\r",
+							"pm.collectionVariables.set(\"crop-y\", _.random(0, imageH));\r",
+							"pm.collectionVariables.set(\"crop-h\", _.random(0, imageH));\r",
+							"pm.collectionVariables.set(\"crop-w\", _.random(0, imageW));\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"IMAGE TEST\", () => {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(300);\r",
+							"    //pm.response.to.have.header(\"Content-Type\", \"image/png\");\r",
+							"})\r",
+							"// pm.test(\"IMAGE TEST 204\", () => {\r",
+							"//     //pm.response.to.have.status(200);\r",
+							"//     pm.response.to.have.status(204);\r",
+							"//     //pm.response.to.have.header(\"Content-Type\", \"image/png\");\r",
+							"// })"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "file",
+					"file": {
+						"src": "kart1.png"
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/process/{{transformType}}/{{crop-x}},{{crop-y}},{{crop-w}},{{crop-h}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"process",
+						"{{transformType}}",
+						"{{crop-x}},{{crop-y}},{{crop-w}},{{crop-h}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "transformType",
+			"value": "flip-v",
+			"type": "string"
+		},
+		{
+			"key": "crop-x",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "crop-y",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "crop-w",
+			"value": "0",
+			"type": "string"
+		},
+		{
+			"key": "crop-h",
+			"value": "0",
+			"type": "string"
+		}
+	]
+}
