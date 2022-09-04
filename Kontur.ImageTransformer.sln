@@ -5,6 +5,13 @@ VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kontur.ImageTransformer", "Kontur.ImageTransformer\Kontur.ImageTransformer.csproj", "{9801585B-D1AA-4078-B9C4-7B7F8883E55E}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8F4C6E56-ADCA-4F8C-A66F-2EC3BC7F663C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{824E0AFC-25D8-4CC1-B2AC-13CE119BD12F}"
+	ProjectSection(SolutionItems) = preProject
+		readme.md = readme.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,5 +28,8 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {B54A5E3E-1FD9-466E-90E3-156515C3D2B2}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9801585B-D1AA-4078-B9C4-7B7F8883E55E} = {8F4C6E56-ADCA-4F8C-A66F-2EC3BC7F663C}
 	EndGlobalSection
 EndGlobal
