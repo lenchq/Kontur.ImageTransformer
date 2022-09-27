@@ -41,10 +41,10 @@ namespace Kontur.ImageTransformer
             //image must be:
             // not higher than 1000x1000
             // weight not more than 100 Kb
-            _comparator.AddOperator(img => img.Height <= 1000);
-            _comparator.AddOperator(img => img.Width <= 1000);
-            _comparator.AddOperator(img => img.Size <= 100);
-            _comparator.AddOperator(img => img.Format == ImageFormat.Png);
+            _comparator.AddOperator(img => img.Height <= 1000)
+                .AddOperator(img => img.Width <= 1000)
+                .AddOperator(img => img.Size <= 100)
+                .AddOperator(img => img.Format == ImageFormat.Png);
         }
         
         public void Start(string prefix)

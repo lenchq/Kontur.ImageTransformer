@@ -13,9 +13,10 @@ namespace Kontur.ImageTransformer.Model
             _predicates = new List<Func<IImage, bool>>();
         }
 
-        public void AddOperator(Func<IImage, bool> predicate)
+        public IImageComparator AddOperator(Func<IImage, bool> predicate)
         {
             _predicates.Add(predicate);
+            return this;
         }
         
         public bool Compare(IImage image)
