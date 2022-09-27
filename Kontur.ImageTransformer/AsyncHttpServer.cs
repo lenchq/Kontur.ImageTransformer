@@ -40,7 +40,7 @@ namespace Kontur.ImageTransformer
             //Image comparison operators
             //image must be:
             // not higher than 1000x1000
-            // weight not more than 100 Kb
+            // weights not more than 100 Kb
             _comparator.AddOperator(img => img.Height <= 1000)
                 .AddOperator(img => img.Width <= 1000)
                 .AddOperator(img => img.Size <= 100)

@@ -71,7 +71,7 @@ namespace Kontur.ImageTransformer.Model
             if (!_initialized)
                 throw new Exception("Image not initialized! use Init()");
 
-                return _comparator.Compare(_imageInfo);
+            return _comparator.Compare(_imageInfo);
         }
 
         public void ProcessImage(TransformType type, ITransformCoords coords)
