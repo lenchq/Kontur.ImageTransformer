@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿// ReSharper disable All
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 

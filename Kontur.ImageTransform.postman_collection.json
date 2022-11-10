@@ -13,26 +13,11 @@
 					"listen": "prerequest",
 					"script": {
 						"exec": [
-							"var transformType = _.random(0,3);\r",
-							"switch (transformType) {\r",
-							"    case 0:\r",
-							"        transformType = \"rotate-cw\";\r",
-							"        break;\r",
-							"    case 1:\r",
-							"        transformType = \"rotate-ccw\";\r",
-							"        break;\r",
-							"    case 2:\r",
-							"        transformType = \"flip-v\";\r",
-							"        break;\r",
-							"    case 3:\r",
-							"        transformType = \"flip-h\";\r",
-							"        break;\r",
-							"}\r",
-							"pm.collectionVariables.set(\"transformType\", transformType);\r",
-							"\r",
 							"const imageH = 400;\r",
 							"const imageW = 500;\r",
 							"\r",
+							"var transformType = _.sample(['rotate-cw', 'rotate-ccw', 'flip-v', 'flip-h'])\r",
+							"pm.collectionVariables.set(\"transformType\", transformType);\r",
 							"pm.collectionVariables.set(\"crop-x\", _.random(0, imageW));\r",
 							"pm.collectionVariables.set(\"crop-y\", _.random(0, imageH));\r",
 							"pm.collectionVariables.set(\"crop-h\", _.random(0, imageH));\r",
@@ -51,16 +36,15 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"IMAGE TEST\", () => {\r",
+							"pm.test(\"Success response\", () => {\r",
 							"    pm.expect(pm.response.code).to.be.oneOf([200, 204]);\r",
-							"    pm.expect(pm.response.responseTime).to.be.lessThan(300);\r",
-							"    //pm.response.to.have.header(\"Content-Type\", \"image/png\");\r",
+							"    if (pm.response.code == 200) {\r",
+							"        pm.response.to.have.header(\"Content-Type\", \"image/png\");\r",
+							"    }\r",
 							"})\r",
-							"// pm.test(\"IMAGE TEST 204\", () => {\r",
-							"//     //pm.response.to.have.status(200);\r",
-							"//     pm.response.to.have.status(204);\r",
-							"//     //pm.response.to.have.header(\"Content-Type\", \"image/png\");\r",
-							"// })"
+							"pm.test(\"Response time\", () => {\r",
+							"    pm.expect(pm.response.responseTime).to.be.lessThan(100);\r",
+							"})"
 						],
 						"type": "text/javascript"
 					}

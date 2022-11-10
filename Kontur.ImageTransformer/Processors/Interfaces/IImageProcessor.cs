@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Kontur.ImageTransformer.Model.Interfaces
+namespace Kontur.ImageTransformer.Processors.Interfaces
 {
     public interface IImageProcessor : IDisposable
     {

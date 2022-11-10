@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Kontur.ImageTransformer.Model.Interfaces;
+using Kontur.ImageTransformer.Processors.Interfaces;
 
 namespace Kontur.ImageTransformer.Model
 {

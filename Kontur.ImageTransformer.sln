@@ -10,6 +10,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{824E0AFC-25D8-4CC1-B2AC-13CE119BD12F}"
 	ProjectSection(SolutionItems) = preProject
 		readme.md = readme.md
+		Dockerfile = Dockerfile
+		.dockerignore = .dockerignore
 	EndProjectSection
 EndProject
 Global

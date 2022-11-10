@@ -6,8 +6,9 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using Kontur.ImageTransformer.Model;
-using Kontur.ImageTransformer.Model.Interfaces;
-using ImageFormat = Kontur.ImageTransformer.Model.Interfaces.ImageFormat;
+using Kontur.ImageTransformer.Processors.Interfaces;
+using ImageFormat = Kontur.ImageTransformer.Processors.Interfaces.ImageFormat;
+using static Kontur.ImageTransformer.Extensions.StatusHelper;
 
 namespace Kontur.ImageTransformer
 {
@@ -24,7 +25,7 @@ namespace Kontur.ImageTransformer
         private readonly Regex _coordsRegex = new Regex(@"[\-0-9]{1,10},[\-0-9]{1,10},[\-0-9]{1,10},[\-0-9]{1,10}",
             RegexOptions.Multiline);
         
-        private const int REQUEST_TIMEOUT_MS = 1000;
+        private const int RequestTimeoutMs = 1000;
         private readonly HttpListener _listener;
         private Thread _listenerThread;
         private bool _disposed;
@@ -106,32 +107,33 @@ namespace Kontur.ImageTransformer
                     if (_listener.IsListening)
                     {
                         var ctx = _listener.GetContext();
-                        Task.Run(async () =>
+                        var cts = new CancellationTokenSource();
+                        cts.CancelAfter(RequestTimeoutMs);
+                        Task.Run( async () =>
                         {
+                            cts.Token.ThrowIfCancellationRequested();
                             var context = ctx;
                             try
                             {
                                 var statusCode = await HandleContext(context);
                                 context.Response.StatusCode = statusCode;
                             }
+                            catch (TaskCanceledException)
+                            {
+                                ctx.Response.StatusCode = RequestTimeout();
+                                ctx.Response.Close();
+                            }
                             catch(Exception ex)
                             {
-                                context.Response.StatusCode = (int) HttpStatusCode.RequestTimeout;
+                                context.Response.StatusCode = InternalServerError();
                                 Console.WriteLine("{0}\n\t{1}", ex.Message, ex.StackTrace);
                             }
                             finally
                             {
                                 context.Response.Close();
+                                cts.Dispose();
                             }
-                        });
-                        
-                        //timeout timer
-                        var timer = new Timer(_ =>
-                        {
-                            ctx.Response.StatusCode = (int) HttpStatusCode.GatewayTimeout;
-                            ctx.Request.InputStream.Close();
-                            ctx.Response.OutputStream.Close();
-                        }, new object(), REQUEST_TIMEOUT_MS, -1);
+                        }, cts.Token);
                     }
                     else Thread.Sleep(0);
                 }
@@ -159,7 +161,8 @@ namespace Kontur.ImageTransformer
             return BadRequest();
         }
 
-        private async Task<int> HandleImageProcessing(HttpListenerRequest request, HttpListenerResponse response,  string[] path)
+        private async Task<int> HandleImageProcessing(HttpListenerRequest request, HttpListenerResponse response,
+            string[] path)
         {
             #region query processing
             TransformType? GetTransformMethod(string query)
@@ -206,14 +209,8 @@ namespace Kontur.ImageTransformer
                 try
                 {
                     proc = new TImageProcessor();
-                    using (var ms = new MemoryStream())
-                    {
-                        await datastream.CopyToAsync(ms);
-                        ms.Position = 0;
-                        var filesize = request.ContentLength64;
-
-                        proc.InitWithFilesize(_comparator, ms, filesize);
-                    }
+                    var filesize = request.ContentLength64;
+                    proc.InitWithFilesize(_comparator, request.InputStream, filesize);
                 }
                 catch (Exception)
                 {
@@ -221,7 +218,7 @@ namespace Kontur.ImageTransformer
                     return InternalServerError();
                 }
             }
-
+            
 
             if (!proc.CheckImage())
             {
@@ -255,31 +252,7 @@ namespace Kontur.ImageTransformer
             proc.WriteImage(response.OutputStream);
             proc.Dispose();
 
-            return OK();
-        }
-
-        private int InternalServerError()
-        {
-            return (int) HttpStatusCode.InternalServerError;
-        }
-
-        private int NotFound()
-        {
-            return (int) HttpStatusCode.NotFound;
-        }
-
-        private int NoContent()
-        {
-            return (int) HttpStatusCode.NoContent;
-        }
-        private int BadRequest()
-        {
-            return (int) HttpStatusCode.BadRequest;
-        }
-
-        private int OK()
-        {
-            return (int) HttpStatusCode.OK;
+            return Ok();
         }
     }
 }

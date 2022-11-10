@@ -1,0 +1,11 @@
+*/bin
+*/obj
+*.rar
+*.zip
+*.pdf
+*.md
+test-results/
+*/test-results
+*.jmx
+*/packages
+packages/

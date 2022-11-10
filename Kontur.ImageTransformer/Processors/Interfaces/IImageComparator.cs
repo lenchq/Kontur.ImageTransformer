@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kontur.ImageTransformer.Model.Interfaces
+namespace Kontur.ImageTransformer.Processors.Interfaces
 {
     public interface IImageComparator
     {

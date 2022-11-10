@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Kontur.ImageTransformer.Model.Interfaces;
+using Kontur.ImageTransformer.Processors.Interfaces;
 
-namespace Kontur.ImageTransformer.Model
+namespace Kontur.ImageTransformer.Processors
 {
     public sealed class DefaultImageComparator : IImageComparator
     {
